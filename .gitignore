@@ -1,0 +1,10 @@
+.env.local
+node_modules/
+.vercel
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+tmp/
+safety-companion.log
+safety-companion.pid

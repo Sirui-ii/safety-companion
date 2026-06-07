@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Safety Companion provides voice-guided emotional support for anxiety, loneliness, panic, and moments when staying safe feels difficult.">
+    <title>Safety Companion</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#check-in">Skip to check in</a>
+    <main class="site-shell">
+      <header class="site-header">
+        <a class="brand" href="/" aria-label="Safety Companion home">
+          <span></span>
+          Safety Companion
+        </a>
+        <nav aria-label="Main navigation">
+          <a href="#example-questions">Questions</a>
+          <a href="#check-in">Check in</a>
+          <a href="tel:+14159085000">Call</a>
+        </nav>
+      </header>
+
+      <section class="urgent-note" aria-label="Crisis support">
+        <p><strong>If you might hurt yourself or someone else, call emergency services now.</strong> In the U.S. and Canada, call or text <a href="tel:988">988</a>.</p>
+        <a href="tel:988">Call 988</a>
+      </section>
+
+      <section class="hero" aria-label="Safety Companion introduction">
+        <div class="hero-copy">
+          <p class="eyebrow">Voice support for mental health moments</p>
+          <h1>Get help staying grounded and safe.</h1>
+          <p class="lede">Safety Companion supports people dealing with anxiety, loneliness, panic, emotional overwhelm, or unsafe thoughts. It asks simple questions, helps you organize what you are feeling, and guides you toward one safe next step.</p>
+          <div class="hero-actions">
+            <a class="primary-action" href="tel:+14159085000">Call Safety Companion</a>
+            <a class="secondary-action" href="#check-in">Write how I feel</a>
+          </div>
+          <p class="phone-line">+1 (415) 908-5000</p>
+        </div>
+
+        <aside class="call-card" aria-label="Call preview">
+          <div class="voice-mark" aria-hidden="true"><i></i><i></i><i></i></div>
+          <p>“Tell me what is happening. We will focus on safety first.”</p>
+          <span>Safety Companion</span>
+        </aside>
+      </section>
+
+      <section class="questions-section" id="example-questions" aria-label="Questions Safety Companion may ask">
+        <div class="section-heading">
+          <p class="eyebrow">What it asks</p>
+          <h2>Questions designed for emotional check-ins.</h2>
+        </div>
+        <div class="question-list">
+          <article>
+            <span>01</span>
+            <h3>How are you feeling right now?</h3>
+            <p>Name the emotion, body feeling, or thought that feels strongest.</p>
+          </article>
+          <article>
+            <span>02</span>
+            <h3>What happened before the feeling changed?</h3>
+            <p>Identify triggers, stressors, or situations that may have raised the intensity.</p>
+          </article>
+          <article>
+            <span>03</span>
+            <h3>What would help you stay safe right now?</h3>
+            <p>Choose one immediate action, like moving away from risk, contacting someone, or grounding your body.</p>
+          </article>
+          <article>
+            <span>04</span>
+            <h3>Who can you contact for support?</h3>
+            <p>Pick one trusted person, crisis line, clinician, or nearby place where you are not alone.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="check-in-section" id="check-in" aria-label="Write a check in">
+        <div class="check-in-copy">
+          <p class="eyebrow">Start here</p>
+          <h2>Write what you are experiencing. Get a safety-focused next step.</h2>
+          <p>Answer a few questions so the companion can help you identify what you feel, what you need, and who can support you.</p>
+        </div>
+
+        <form class="check-in-form" id="ideaForm">
+          <label>
+            What should we call you?
+            <input name="name" value="friend" autocomplete="off">
+          </label>
+          <label>
+            How are you feeling?
+            <textarea name="feeling">I feel overwhelmed and I do not want to be alone with this.</textarea>
+          </label>
+          <label>
+            How intense is it?
+            <select name="risk">
+              <option value="low">I feel bad, but I am safe right now</option>
+              <option value="medium">I am having dark thoughts, but no immediate plan</option>
+              <option value="high">I might hurt myself or I have a plan</option>
+            </select>
+          </label>
+          <label>
+            What has helped before?
+            <input name="helps" value="music, walking, texting someone kind, warm shower">
+          </label>
+          <label>
+            Who can you contact?
+            <input name="contact" value="a trusted friend, family member, mentor, therapist, or 988">
+          </label>
+          <div class="hidden-fields">
+            <input name="socialFear" value="starting a conversation without feeling awkward">
+            <select name="language"><option>English</option></select>
+            <select name="vibe"><option>gentle, grounded, hopeful</option></select>
+          </div>
+          <button class="primary-action" type="submit">Get my next step</button>
+        </form>
+      </section>
+
+      <section class="plan-section" aria-label="Your plan">
+        <div class="plan-card">
+          <div class="panel-head">
+            <h2>Your next step</h2>
+            <button id="copyScript" type="button">Copy</button>
+          </div>
+          <p class="one-liner" id="oneLiner">Write how you feel to start.</p>
+          <div class="script" id="script"></div>
+          <div class="questions" id="questionsList"></div>
+        </div>
+      </section>
+
+      <footer class="site-footer">
+        <p>Safety Companion provides emotional support and safety planning. It is not a replacement for emergency care, therapy, or medical treatment.</p>
+        <a href="tel:+14159085000">Call +1 (415) 908-5000</a>
+      </footer>
+    </main>
+
+    <div class="app-hooks" aria-hidden="true">
+      <button id="soundBed" type="button" data-on="false" aria-pressed="false">Calm audio</button>
+      <button id="lockIn" type="button">Steady Mode</button>
+      <div id="status">Checking setup...</div>
+      <div id="phone">LiveKit phone: not loaded</div>
+      <div id="questions"></div>
+      <div id="deck"></div>
+      <div id="rubric"></div>
+      <textarea id="transcript"></textarea>
+      <div id="feedback"></div>
+      <span id="score">--</span>
+      <p id="level">Run a reflection round.</p>
+      <button id="startPractice" type="button">Start mic</button>
+      <button id="stopPractice" type="button">Stop</button>
+      <button id="evaluatePractice" type="button">Reflect</button>
+      <textarea id="companionQuestion"></textarea>
+      <button id="askInvestor" type="button">Ask companion</button>
+      <div id="companionAnswer"></div>
+      <button id="jumpCheckIn" type="button">Write instead</button>
+      <button id="jumpMemory" type="button">Make a small note</button>
+      <button id="summarizeContext" type="button">Make a small note</button>
+      <div id="contextSummary"></div>
+      <section id="memoryPanel"></section>
+    </div>
+
+    <section class="lock-screen" id="lockScreen" aria-hidden="true">
+      <div class="lock-shell">
+        <div class="lock-copy">
+          <p class="eyebrow">Steady mode</p>
+          <h2>One breath. One person. One next step.</h2>
+          <p id="lockLine">You do not need to solve everything right now. Start with the next safe minute.</p>
+        </div>
+        <div class="lock-card">
+          <div class="lock-meter">
+            <span id="lockScore">--</span>
+            <p id="lockLevel">Connection mode</p>
+          </div>
+          <div class="lock-script" id="lockScript">Create a plan, then enter Steady Mode.</div>
+        </div>
+        <div class="lock-controls" role="group" aria-label="Steady Mode controls">
+          <button id="lockMic" type="button">Talk now</button>
+          <button id="lockAsk" type="button">Next 10 minutes</button>
+          <button id="lockMusic" type="button" data-mode="aurora">Breathing audio</button>
+          <button id="luckyMeal" type="button" data-mode="lucky">Social spark</button>
+          <button id="exitLock" type="button">Exit</button>
+        </div>
+      </div>
+    </section>
+
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>

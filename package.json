@@ -1,0 +1,19 @@
+{
+  "name": "safety-companion",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "dev": "node server.mjs",
+    "sync:livekit": "node scripts/sync-livekit-env.mjs",
+    "agent": ".venv/bin/python livekit_agent.py dev",
+    "check": "node scripts/check.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "livekit-server-sdk": "^2.15.4"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "dispatch_rule": {
+    "rule": {
+      "dispatchRuleIndividual": {
+        "roomPrefix": "safety-companion-"
+      }
+    },
+    "name": "safety-companion-inbound",
+    "roomConfig": {
+      "agents": [
+        {
+          "agentName": "safety-companion",
+          "metadata": "{\"product\":\"Safety Companion\",\"mode\":\"mental-health-safety-support\"}"
+        }
+      ]
+    }
+  }
+}
