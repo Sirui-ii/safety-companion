@@ -22,11 +22,11 @@ class SafetyCompanionTests(unittest.TestCase):
         self.assertIn("bargaining", source)
         self.assertIn("depression", source)
         self.assertIn("acceptance", source)
-        self.assertIn("session.say", source)
-        self.assertIn("Hey. I'm here with you", source)
+        self.assertIn("session.generate_reply", source)
+        self.assertIn("Hi, I'm here with you", source)
         self.assertIn("professional mental-health support", source)
         self.assertIn("Avoid figurative language", source)
-        self.assertIn("what happened?", source)
+        self.assertIn("What's happening right now?", source)
         self.assertIn("trained support companion", source)
 
     def test_agent_integrates_livekit_inference_and_moss(self):
