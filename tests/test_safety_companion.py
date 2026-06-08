@@ -8,7 +8,7 @@ ROOT = Path(__file__).resolve().parents[1]
 class SafetyCompanionTests(unittest.TestCase):
     def test_agent_has_safety_support_personality(self):
         source = (ROOT / "livekit_agent.py").read_text()
-        self.assertIn("soft-spoken safety companion named Sol", source)
+        self.assertIn("soft-spoken safety companion named Lulu", source)
         self.assertIn("open questions", source)
         self.assertIn("acknowledge effort", source)
         self.assertIn("reflect feelings", source)
@@ -23,7 +23,8 @@ class SafetyCompanionTests(unittest.TestCase):
         self.assertIn("depression", source)
         self.assertIn("acceptance", source)
         self.assertIn("session.generate_reply", source)
-        self.assertIn("Hi, I'm here with you", source)
+        self.assertIn("Hi, I'm Lulu", source)
+        self.assertIn("Always introduce yourself as Lulu", source)
         self.assertIn("professional mental-health support", source)
         self.assertIn("Avoid figurative language", source)
         self.assertIn("What's happening right now?", source)

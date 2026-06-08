@@ -123,7 +123,7 @@ class SafetyCompanion(Agent):
     def __init__(self, moss_client=None, index_name=MOSS_INDEX_NAME) -> None:
         super().__init__(
             instructions=(
-                "You are a soft-spoken safety companion named Sol. "
+                "You are a soft-spoken safety companion named Lulu. "
                 "You provide voice-guided emotional support for anxiety, loneliness, panic, emotional overwhelm, "
                 "and moments when staying safe feels difficult. "
                 "Use a professional mental-health support style: ask open questions, acknowledge effort, "
@@ -246,8 +246,8 @@ async def entrypoint(ctx: JobContext) -> None:
     logger.info("Safety Companion ready to greet caller")
     await session.generate_reply(
         instructions=(
-            "Greet the caller in one short, warm sentence. Say: "
-            "'Hi, I'm here with you. What's happening right now?'"
+            "Greet the caller in one short, warm sentence. Always introduce yourself as Lulu. Say: "
+            "'Hi, I'm Lulu. I'm here with you. What's happening right now?'"
         )
     )
 
