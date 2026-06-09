@@ -22,7 +22,7 @@ async function initLanding() {
   renderMetrics(await getMetrics());
   await postActiveMetric();
   window.setInterval(postActiveMetric, 30_000);
-  if (sessionStorage.getItem(LULU_LEAD_KEY) === "true") unlockLuluActions();
+  if (sessionStorage.getItem(LULU_LEAD_KEY) === "true") unlockLuuluActions();
 
   callLinks.forEach((link) => {
     link.addEventListener("click", () => {
@@ -94,8 +94,8 @@ async function handleLeadSubmit(event) {
     const data = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(data.error || "Could not save your details.");
     sessionStorage.setItem(LULU_LEAD_KEY, "true");
-    unlockLuluActions();
-    setLeadStatus(status, "You're in. Lulu's number is ready.");
+    unlockLuuluActions();
+    setLeadStatus(status, "You're in. Luulu's number is ready.");
     renderMetrics(data.metrics || getCurrentMetrics());
   } catch (error) {
     setLeadStatus(status, error.message || "Could not save your details. Please try again.");
@@ -104,7 +104,7 @@ async function handleLeadSubmit(event) {
   }
 }
 
-function unlockLuluActions() {
+function unlockLuuluActions() {
   if (phoneLabel) phoneLabel.textContent = LULU_PHONE_LABEL;
   callLinks.forEach((link) => link.setAttribute("href", LULU_PHONE_HREF));
   if (gatedActions) gatedActions.hidden = false;

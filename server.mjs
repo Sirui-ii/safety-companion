@@ -36,7 +36,7 @@ const mimeTypes = new Map([
 ]);
 
 const companionPrompt = `
-You are Lulu, a warm emotional companion.
+You are Luulu, a warm emotional companion.
 Use gentle listening: ask open questions, notice effort, reflect feelings, and summarize one next step.
 Help people notice distress, regulate their body, reconnect with one human being, and choose one tiny safe action.
 You are not a therapist, clinician, or emergency service. Never diagnose. Never suggest self-harm.
@@ -124,10 +124,10 @@ export async function handleRequest(req, res) {
     }
 
     if (req.method === "GET" && url.pathname === "/lulu.vcf") {
-      const vcard = await createLuluVcard();
+      const vcard = await createLuuluVcard();
       res.writeHead(200, {
         "Content-Type": "text/vcard; charset=utf-8",
-        "Content-Disposition": 'attachment; filename="Lulu.vcf"',
+        "Content-Disposition": 'attachment; filename="Luulu.vcf"',
         "Cache-Control": "public, max-age=3600"
       });
       res.end(vcard);
@@ -203,7 +203,7 @@ export async function handleRequest(req, res) {
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const server = http.createServer(handleRequest);
   server.listen(port, () => {
-    console.log(`Lulu Friend & Companion running at http://localhost:${port}`);
+    console.log(`Luulu Friend & Companion running at http://localhost:${port}`);
   });
 }
 
@@ -262,7 +262,7 @@ function normalizeLead(body) {
     emailOptIn: Boolean(body.emailOptIn),
     sessionId: cleanSessionId(body.sessionId || ""),
     createdAt: new Date().toISOString(),
-    source: "Lulu landing page"
+    source: "Luulu landing page"
   };
 }
 
@@ -319,19 +319,19 @@ async function saveLeadToNotion(lead) {
   return { saved: true, pageId: data.id };
 }
 
-async function createLuluVcard() {
+async function createLuuluVcard() {
   const imagePath = path.join(publicDir, "lulu-contact.jpg");
   const photo = existsSync(imagePath) ? (await readFile(imagePath)).toString("base64") : "";
   const lines = [
     "BEGIN:VCARD",
     "VERSION:3.0",
-    "N:Lulu;;;;",
-    "FN:Lulu",
+    "N:Luulu;;;;",
+    "FN:Luulu",
     "ORG:Friend & Companion",
     "TITLE:AI Emotional Companion",
     `TEL;TYPE=CELL,VOICE:${process.env.LIVEKIT_PHONE_NUMBER || defaultPhoneNumber}`,
     "URL:https://safety-companion-siruis-projects-98fae10c.vercel.app",
-    "NOTE:Lulu is an AI friend and emotional companion. Lulu does not record calls or save what you say."
+    "NOTE:Luulu is an AI friend and emotional companion. Luulu does not record calls or save what you say."
   ];
   if (photo) {
     lines.push(...foldVcardLine(`PHOTO;ENCODING=b;TYPE=JPEG:${photo}`));
@@ -583,7 +583,7 @@ function summarizeContextFallback(checkIn, plan) {
       ? "Call emergency services or 988 now; do not stay alone."
       : `Regulate for two minutes, contact ${contact}, then do one helper: ${helpers.split(",")[0] || helpers}.`,
     memoryNote:
-      "Saved note: use this next time so Lulu can remember the pattern, helpers, risk notes, and next step without making the person repeat everything."
+      "Saved note: use this next time so Luulu can remember the pattern, helpers, risk notes, and next step without making the person repeat everything."
   };
 }
 

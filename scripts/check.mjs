@@ -9,4 +9,4 @@ if (!response.ok) {
 }
 
 const data = await response.json();
-console.log(`Lulu Friend & Companion is healthy: ${data.status}`);
+console.log(`Luulu Friend & Companion is healthy: ${data.status}`);

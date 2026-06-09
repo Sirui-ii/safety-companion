@@ -1,10 +1,10 @@
-# Lulu Friend & Companion
+# Luulu Friend & Companion
 
-Lulu is a voice-guided AI friend and emotional companion for anxiety, loneliness, panic, emotional overwhelm, and moments when staying safe feels difficult.
+Luulu is a voice-guided AI friend and emotional companion for anxiety, loneliness, panic, emotional overwhelm, and moments when staying safe feels difficult.
 
 The product gives people a simple way to check in, name what they are feeling, identify what may have raised the intensity, choose one immediate safety action, and decide who they can contact for support.
 
-Lulu is not a therapist, clinician, emergency service, or replacement for medical care. If someone may hurt themselves or cannot stay safe, the app directs them to emergency services and to call/text 988 in the U.S. and Canada.
+Luulu is not a therapist, clinician, emergency service, or replacement for medical care. If someone may hurt themselves or cannot stay safe, the app directs them to emergency services and to call/text 988 in the U.S. and Canada.
 
 ## Live App
 
@@ -16,10 +16,10 @@ The website is deployed on Vercel. The phone agent currently requires a LiveKit 
 ## Features
 
 - Simple friend-and-companion landing page with a direct phone CTA.
-- Anonymous usage number for Lulu call starts.
-- Save-to-contacts button with Lulu's contact photo and phone number.
+- Anonymous usage number for Luulu call starts.
+- Save-to-contacts button with Luulu's contact photo and phone number.
 - Privacy-preserving success metrics for call taps, LiveKit call starts, contact saves, and self-help check-ins.
-- Optional lead capture gate before showing Lulu's number, with explicit SMS and email opt-ins.
+- Optional lead capture gate before showing Luulu's number, with explicit SMS and email opt-ins.
 - Optional Notion lead database sync for hackathon usage tracking.
 - Crisis-aware safety routing for emergency services and 988.
 - LiveKit phone worker for voice conversations.
@@ -146,13 +146,13 @@ python3 -m unittest tests/test_safety_companion.py
 
 ## Measuring Success
 
-Lulu should measure whether people can reach support without collecting sensitive conversation content.
+Luulu should measure whether people can reach support without collecting sensitive conversation content.
 
 Recommended metrics:
 
 - `livekitCalls`: real call/session starts from the LiveKit webhook.
 - `callClicks`: people tapping the phone CTA on the website.
-- `contactSaves`: people saving Lulu to their contacts.
+- `contactSaves`: people saving Luulu to their contacts.
 - `leads`: people who submitted the contact form before unlocking the number.
 - `luluStarts`: anonymous total starts shown on the landing page.
 - Duration buckets and repeat usage can be added later with a durable analytics store.
@@ -183,18 +183,18 @@ Session ID: text
 Created At: date
 ```
 
-If those env vars are missing, the form still unlocks Lulu's number, but the response will report `missing_notion_env` and the lead will not be durable on Vercel.
+If those env vars are missing, the form still unlocks Luulu's number, but the response will report `missing_notion_env` and the lead will not be durable on Vercel.
 
 ## Safety Boundaries
 
-Lulu should:
+Luulu should:
 
 - Ask clear, simple questions.
 - Help the user identify feelings, triggers, needs, and immediate safety actions.
 - Encourage contacting emergency services or 988 when there is immediate danger.
 - Avoid diagnosis, clinical claims, promises of rescue, or replacing therapy.
 
-Lulu should not:
+Luulu should not:
 
 - Present itself as a licensed clinician.
 - Diagnose the user.
