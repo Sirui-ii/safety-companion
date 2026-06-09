@@ -15,6 +15,7 @@ const metrics = globalThis.__luluMetrics || {
   luluStarts: 0,
   callClicks: 0,
   livekitCalls: 0,
+  contactSaves: 0,
   checkIns: 0,
   pageViews: 0,
   updatedAt: null
@@ -68,6 +69,12 @@ export async function handleRequest(req, res) {
     if (req.method === "POST" && url.pathname === "/api/metrics/check-in") {
       metrics.checkIns += 1;
       metrics.luluStarts += 1;
+      metrics.updatedAt = new Date().toISOString();
+      return sendJson(res, 200, publicMetrics());
+    }
+
+    if (req.method === "POST" && url.pathname === "/api/metrics/contact") {
+      metrics.contactSaves += 1;
       metrics.updatedAt = new Date().toISOString();
       return sendJson(res, 200, publicMetrics());
     }
@@ -198,6 +205,7 @@ function publicMetrics() {
     luluStarts: metrics.luluStarts,
     callClicks: metrics.callClicks,
     livekitCalls: metrics.livekitCalls,
+    contactSaves: metrics.contactSaves,
     checkIns: metrics.checkIns,
     pageViews: metrics.pageViews,
     updatedAt: metrics.updatedAt

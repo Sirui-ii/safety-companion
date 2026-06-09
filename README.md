@@ -18,6 +18,7 @@ The website is deployed on Vercel. The phone agent currently requires a LiveKit 
 - Simple friend-and-companion landing page with a direct phone CTA.
 - Anonymous usage number for Lulu call starts.
 - Save-to-contacts button with Lulu's contact photo and phone number.
+- Privacy-preserving success metrics for call taps, LiveKit call starts, contact saves, and self-help check-ins.
 - Crisis-aware safety routing for emergency services and 988.
 - LiveKit phone worker for voice conversations.
 - ElevenLabs voice through LiveKit Inference.
@@ -140,6 +141,20 @@ Run Python behavior tests:
 ```bash
 python3 -m unittest tests/test_safety_companion.py
 ```
+
+## Measuring Success
+
+Lulu should measure whether people can reach support without collecting sensitive conversation content.
+
+Recommended metrics:
+
+- `livekitCalls`: real call/session starts from the LiveKit webhook.
+- `callClicks`: people tapping the phone CTA on the website.
+- `contactSaves`: people saving Lulu to their contacts.
+- `luluStarts`: anonymous total starts shown on the landing page.
+- Duration buckets and repeat usage can be added later with a durable analytics store.
+
+Do not record calls, store transcripts, save phone numbers, or build distress profiles unless a user explicitly opts in. The current counters are anonymous and in-memory; use Vercel KV, Postgres, Supabase, or PostHog if durable analytics are needed.
 
 ## Safety Boundaries
 

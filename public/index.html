@@ -35,6 +35,12 @@
       </header>
 
       <section class="hero" aria-label="Lulu introduction">
+        <div class="holo-floaters" aria-hidden="true">
+          <span class="floater floater-one"></span>
+          <span class="floater floater-two"></span>
+          <span class="floater floater-three"></span>
+          <span class="floater floater-four"></span>
+        </div>
         <div class="hero-copy">
           <p class="eyebrow">AI friend & emotional companion</p>
           <h1>Lulu picks up.</h1>
@@ -46,7 +52,7 @@
               <span>Call Lulu</span>
               <strong>+1 (415) 908-5000</strong>
             </a>
-            <a class="contact-action" href="/lulu.vcf" download="Lulu.vcf">
+            <a class="contact-action" data-track-contact href="/lulu.vcf" download="Lulu.vcf">
               <img src="/lulu-contact.jpg" alt="" width="36" height="36">
               <span>Save Lulu to contacts</span>
             </a>
@@ -54,11 +60,26 @@
         </div>
 
         <aside class="companion-card" aria-label="Lulu contact preview">
-          <div class="contact-orbit" aria-hidden="true"></div>
-          <img class="lulu-photo" src="/lulu-contact.jpg" alt="Lulu contact artwork" width="160" height="160">
+          <div class="holo-stage" aria-hidden="true">
+            <div class="holo-ring ring-one"></div>
+            <div class="holo-ring ring-two"></div>
+            <div class="holo-beam"></div>
+            <img class="lulu-photo" src="/lulu-contact.jpg" alt="" width="160" height="160">
+            <span class="holo-chip chip-one">steady</span>
+            <span class="holo-chip chip-two">private</span>
+            <span class="holo-chip chip-three">soft voice</span>
+          </div>
           <p class="card-kicker">incoming calm</p>
           <h2>Hi, I’m Lulu.</h2>
           <p>What’s happening right now?</p>
+          <div class="voice-sim" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <p class="sim-caption">voice companion active</p>
           <section class="metrics-panel" aria-label="Lulu usage">
             <article class="usage-card">
               <strong id="luluStarts">0</strong>
