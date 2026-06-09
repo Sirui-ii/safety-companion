@@ -569,31 +569,33 @@ h1 {
   border: 1px solid rgba(255, 255, 255, 0.72);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.42);
-  padding: 8px 10px;
+  max-width: 148px;
+  padding: 8px 12px;
   color: #315f51;
   font-size: 11px;
   font-weight: 760;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  white-space: nowrap;
   backdrop-filter: blur(12px);
   box-shadow: 0 12px 30px rgba(44, 134, 103, 0.1);
 }
 
 .chip-one {
-  top: 18%;
-  left: 3%;
+  top: 15%;
+  left: -2%;
   animation: chipFloat 5s ease-in-out infinite;
 }
 
 .chip-two {
-  right: 2%;
-  top: 36%;
+  right: 4%;
+  top: 34%;
   animation: chipFloat 5.6s 500ms ease-in-out infinite;
 }
 
 .chip-three {
-  bottom: 18%;
-  left: 11%;
+  bottom: 16%;
+  left: 4%;
   animation: chipFloat 5.2s 900ms ease-in-out infinite;
 }
 
@@ -672,11 +674,23 @@ h1 {
 .sim-caption {
   position: relative;
   z-index: 1;
-  margin: 9px 0 0;
-  color: rgba(49, 95, 81, 0.78);
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.04em;
+  max-width: 290px;
+  margin: 12px 0 0;
+  color: rgba(37, 80, 66, 0.86);
+  font-size: clamp(15px, 1.6vw, 18px);
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  line-height: 1.24;
+}
+
+.permission-note {
+  position: relative;
+  z-index: 1;
+  max-width: 300px;
+  margin: 8px 0 0;
+  color: rgba(81, 96, 85, 0.78);
+  font-size: 13px;
+  line-height: 1.38;
 }
 
 .metrics-panel {
@@ -1087,12 +1101,12 @@ button:focus-visible {
   }
 
   .chip-two {
-    right: 8%;
+    right: 4%;
     top: 28%;
   }
 
   .chip-three {
-    left: 6%;
+    left: 4%;
     bottom: 12%;
   }
 }
