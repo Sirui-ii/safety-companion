@@ -53,11 +53,22 @@ class SafetyCompanionTests(unittest.TestCase):
 
     def test_web_server_has_crisis_guardrails(self):
         source = (ROOT / "server.mjs").read_text()
+        page = (ROOT / "public" / "index.html").read_text()
+        app = (ROOT / "public" / "app.js").read_text()
         self.assertIn("warm safety companion", source)
+        self.assertIn("You are Lulu", source)
         self.assertIn("detectsCrisis", source)
         self.assertIn("call/text 988", source)
         self.assertIn("emergency services", source)
         self.assertIn("gentle listening", source)
+        self.assertIn("/api/metrics", source)
+        self.assertIn("LULU", page)
+        self.assertIn("+1 (415) 908-5000", page)
+        self.assertIn("No recordings", page)
+        self.assertIn("anonymous totals only", page)
+        self.assertIn("people started with Lulu", page)
+        self.assertIn("data-track-call", page)
+        self.assertIn("sendBeacon", app)
 
 
 if __name__ == "__main__":

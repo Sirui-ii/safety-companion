@@ -11,6 +11,14 @@ loadEnv(path.join(__dirname, ".env.local"));
 const port = Number(process.env.PORT || 8791);
 const publicDir = path.join(__dirname, "public");
 const defaultPhoneNumber = "+14159085000";
+const metrics = globalThis.__luluMetrics || {
+  luluStarts: 0,
+  callClicks: 0,
+  checkIns: 0,
+  pageViews: 0,
+  updatedAt: null
+};
+globalThis.__luluMetrics = metrics;
 const mimeTypes = new Map([
   [".html", "text/html; charset=utf-8"],
   [".css", "text/css; charset=utf-8"],
@@ -20,7 +28,7 @@ const mimeTypes = new Map([
 ]);
 
 const companionPrompt = `
-You are Sol, a warm safety companion.
+You are Lulu, a warm safety companion.
 Use gentle listening: ask open questions, notice effort, reflect feelings, and summarize one next step.
 Help people notice distress, regulate their body, reconnect with one human being, and choose one tiny safe action.
 You are not a therapist, clinician, or emergency service. Never diagnose. Never suggest self-harm.
@@ -39,6 +47,26 @@ export async function handleRequest(req, res) {
         gateway: Boolean(process.env.AI_GATEWAY_BASE_URL && process.env.AI_GATEWAY_API_KEY),
         phoneNumber: process.env.LIVEKIT_PHONE_NUMBER || defaultPhoneNumber
       });
+    }
+
+    if (req.method === "GET" && url.pathname === "/api/metrics") {
+      metrics.pageViews += 1;
+      metrics.updatedAt = new Date().toISOString();
+      return sendJson(res, 200, publicMetrics());
+    }
+
+    if (req.method === "POST" && url.pathname === "/api/metrics/call") {
+      metrics.callClicks += 1;
+      metrics.luluStarts += 1;
+      metrics.updatedAt = new Date().toISOString();
+      return sendJson(res, 200, publicMetrics());
+    }
+
+    if (req.method === "POST" && url.pathname === "/api/metrics/check-in") {
+      metrics.checkIns += 1;
+      metrics.luluStarts += 1;
+      metrics.updatedAt = new Date().toISOString();
+      return sendJson(res, 200, publicMetrics());
     }
 
     if (req.method === "GET" && url.pathname === "/api/livekit-config") {
@@ -139,6 +167,16 @@ function pickPlan(body) {
   if (body.plan && typeof body.plan === "object") return body.plan;
   if (body.legacyPlan && typeof body.legacyPlan === "object") return body.legacyPlan;
   return {};
+}
+
+function publicMetrics() {
+  return {
+    luluStarts: metrics.luluStarts,
+    callClicks: metrics.callClicks,
+    checkIns: metrics.checkIns,
+    pageViews: metrics.pageViews,
+    updatedAt: metrics.updatedAt
+  };
 }
 
 async function generateSafetyPlan(checkIn) {
@@ -360,7 +398,7 @@ function summarizeContextFallback(checkIn, plan) {
       ? "Call emergency services or 988 now; do not stay alone."
       : `Regulate for two minutes, contact ${contact}, then do one helper: ${helpers.split(",")[0] || helpers}.`,
     memoryNote:
-      "Saved note: use this next time so Sol can remember the pattern, helpers, risk notes, and next step without making the person repeat everything."
+      "Saved note: use this next time so Lulu can remember the pattern, helpers, risk notes, and next step without making the person repeat everything."
   };
 }
 
