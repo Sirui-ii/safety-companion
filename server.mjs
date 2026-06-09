@@ -3,7 +3,7 @@ import { readFile } from "node:fs/promises";
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { AccessToken } from "livekit-server-sdk";
+import { AccessToken, WebhookReceiver } from "livekit-server-sdk";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 loadEnv(path.join(__dirname, ".env.local"));
@@ -14,6 +14,7 @@ const defaultPhoneNumber = "+14159085000";
 const metrics = globalThis.__luluMetrics || {
   luluStarts: 0,
   callClicks: 0,
+  livekitCalls: 0,
   checkIns: 0,
   pageViews: 0,
   updatedAt: null
@@ -24,11 +25,13 @@ const mimeTypes = new Map([
   [".css", "text/css; charset=utf-8"],
   [".js", "text/javascript; charset=utf-8"],
   [".json", "application/json; charset=utf-8"],
-  [".svg", "image/svg+xml"]
+  [".svg", "image/svg+xml"],
+  [".jpg", "image/jpeg"],
+  [".vcf", "text/vcard; charset=utf-8"]
 ]);
 
 const companionPrompt = `
-You are Lulu, a warm safety companion.
+You are Lulu, a warm emotional companion.
 Use gentle listening: ask open questions, notice effort, reflect feelings, and summarize one next step.
 Help people notice distress, regulate their body, reconnect with one human being, and choose one tiny safe action.
 You are not a therapist, clinician, or emergency service. Never diagnose. Never suggest self-harm.
@@ -69,12 +72,33 @@ export async function handleRequest(req, res) {
       return sendJson(res, 200, publicMetrics());
     }
 
+    if (req.method === "POST" && url.pathname === "/api/livekit-webhook") {
+      const event = await receiveLiveKitWebhook(req);
+      if (event.event === "room_started") {
+        metrics.livekitCalls += 1;
+        metrics.luluStarts = Math.max(metrics.luluStarts, metrics.livekitCalls);
+        metrics.updatedAt = new Date().toISOString();
+      }
+      return sendJson(res, 200, { ok: true });
+    }
+
     if (req.method === "GET" && url.pathname === "/api/livekit-config") {
       return sendJson(res, 200, {
         url: process.env.LIVEKIT_URL || "",
         phoneNumber: process.env.LIVEKIT_PHONE_NUMBER || defaultPhoneNumber,
         ready: Boolean(process.env.LIVEKIT_URL && process.env.LIVEKIT_API_KEY && process.env.LIVEKIT_API_SECRET)
       });
+    }
+
+    if (req.method === "GET" && url.pathname === "/lulu.vcf") {
+      const vcard = await createLuluVcard();
+      res.writeHead(200, {
+        "Content-Type": "text/vcard; charset=utf-8",
+        "Content-Disposition": 'attachment; filename="Lulu.vcf"',
+        "Cache-Control": "public, max-age=3600"
+      });
+      res.end(vcard);
+      return;
     }
 
     if (req.method === "POST" && url.pathname === "/api/livekit-token") {
@@ -146,7 +170,7 @@ export async function handleRequest(req, res) {
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const server = http.createServer(handleRequest);
   server.listen(port, () => {
-    console.log(`Safety Companion running at http://localhost:${port}`);
+    console.log(`Lulu Friend & Companion running at http://localhost:${port}`);
   });
 }
 
@@ -173,10 +197,56 @@ function publicMetrics() {
   return {
     luluStarts: metrics.luluStarts,
     callClicks: metrics.callClicks,
+    livekitCalls: metrics.livekitCalls,
     checkIns: metrics.checkIns,
     pageViews: metrics.pageViews,
     updatedAt: metrics.updatedAt
   };
+}
+
+async function createLuluVcard() {
+  const imagePath = path.join(publicDir, "lulu-contact.jpg");
+  const photo = existsSync(imagePath) ? (await readFile(imagePath)).toString("base64") : "";
+  const lines = [
+    "BEGIN:VCARD",
+    "VERSION:3.0",
+    "N:Lulu;;;;",
+    "FN:Lulu",
+    "ORG:Friend & Companion",
+    "TITLE:AI Emotional Companion",
+    `TEL;TYPE=CELL,VOICE:${process.env.LIVEKIT_PHONE_NUMBER || defaultPhoneNumber}`,
+    "URL:https://safety-companion-siruis-projects-98fae10c.vercel.app",
+    "NOTE:Lulu is an AI friend and emotional companion. Lulu does not record calls or save what you say."
+  ];
+  if (photo) {
+    lines.push(...foldVcardLine(`PHOTO;ENCODING=b;TYPE=JPEG:${photo}`));
+  }
+  lines.push("END:VCARD");
+  return `${lines.join("\r\n")}\r\n`;
+}
+
+async function receiveLiveKitWebhook(req) {
+  const body = await readRaw(req);
+  if (!process.env.LIVEKIT_API_KEY || !process.env.LIVEKIT_API_SECRET) {
+    const parsed = JSON.parse(body || "{}");
+    return { event: parsed.event || "" };
+  }
+  const receiver = new WebhookReceiver(process.env.LIVEKIT_API_KEY, process.env.LIVEKIT_API_SECRET);
+  return receiver.receive(body, req.headers.authorization || "");
+}
+
+async function readRaw(req) {
+  let body = "";
+  for await (const chunk of req) body += chunk;
+  return body;
+}
+
+function foldVcardLine(line) {
+  const chunks = [];
+  for (let index = 0; index < line.length; index += 74) {
+    chunks.push(`${index === 0 ? "" : " "}${line.slice(index, index + 74)}`);
+  }
+  return chunks;
 }
 
 async function generateSafetyPlan(checkIn) {

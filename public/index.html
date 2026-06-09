@@ -3,12 +3,25 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Lulu is a private AI safety companion you can call when you need a calm voice, a small next step, or a moment to feel less alone.">
-    <title>Lulu | Safety Companion</title>
+    <meta name="description" content="Lulu is a private AI friend and emotional companion you can call when you need a calm voice, a small next step, or a moment to feel less alone.">
+    <title>Lulu | Friend & Companion</title>
     <link rel="stylesheet" href="/styles.css">
   </head>
   <body>
-    <main class="landing-shell">
+    <a class="skip-link" href="#main">Skip to main content</a>
+    <div class="announcement" aria-label="Lulu note">
+      <div class="announcement-track">
+        <span>private phone companion</span>
+        <span>call when it feels heavy</span>
+        <span>one gentle question at a time</span>
+        <span>no recordings</span>
+        <span>private phone companion</span>
+        <span>call when it feels heavy</span>
+        <span>one gentle question at a time</span>
+        <span>no recordings</span>
+      </div>
+    </div>
+    <main class="landing-shell" id="main">
       <header class="topbar" aria-label="Lulu navigation">
         <a class="brand" href="/" aria-label="Lulu home">
           <span class="brand-mark"></span>
@@ -22,34 +35,37 @@
       </header>
 
       <section class="hero" aria-label="Lulu introduction">
-        <p class="eyebrow">AI companion hotline</p>
-        <h1>LULU</h1>
-        <p class="subtitle">A calm voice for the moment you do not want to hold alone.</p>
-        <p class="lede">Call Lulu when you feel anxious, lonely, overwhelmed, or unsure what to do next. She listens, asks one gentle question at a time, and helps you find a small safe step.</p>
+        <div class="hero-copy">
+          <p class="eyebrow">AI friend & emotional companion</p>
+          <h1>Lulu picks up.</h1>
+          <p class="subtitle">A calm phone companion for anxious, lonely, or overwhelming moments.</p>
+          <p class="lede">Call Lulu when you need a steady voice. She listens, asks one gentle question at a time, and helps you choose a small next step.</p>
 
-        <a class="number-cta" data-track-call href="tel:+14159085000" aria-label="Call Lulu at +1 415 908 5000">
-          <span>Call now</span>
-          <strong>+1 (415) 908-5000</strong>
-        </a>
-
-        <section class="metrics-panel" aria-label="Lulu usage numbers">
-          <article>
-            <strong id="luluStarts">0</strong>
-            <span>people started with Lulu</span>
-          </article>
-          <article>
-            <strong id="callClicks">0</strong>
-            <span>hotline taps</span>
-          </article>
-          <article>
-            <strong id="checkIns">0</strong>
-            <span>self-help check-ins</span>
-          </article>
-        </section>
-
-        <div class="hero-actions">
-          <button class="secondary-action" id="markCheckIn" type="button">I checked in with Lulu</button>
+          <div class="call-stack" aria-label="Call Lulu">
+            <a class="number-cta" data-track-call href="tel:+14159085000" aria-label="Call Lulu at +1 415 908 5000">
+              <span>Call Lulu</span>
+              <strong>+1 (415) 908-5000</strong>
+            </a>
+            <a class="contact-action" href="/lulu.vcf" download="Lulu.vcf">
+              <img src="/lulu-contact.jpg" alt="" width="36" height="36">
+              <span>Save Lulu to contacts</span>
+            </a>
+          </div>
         </div>
+
+        <aside class="companion-card" aria-label="Lulu contact preview">
+          <div class="contact-orbit" aria-hidden="true"></div>
+          <img class="lulu-photo" src="/lulu-contact.jpg" alt="Lulu contact artwork" width="160" height="160">
+          <p class="card-kicker">incoming calm</p>
+          <h2>Hi, I’m Lulu.</h2>
+          <p>What’s happening right now?</p>
+          <section class="metrics-panel" aria-label="Lulu usage">
+            <article class="usage-card">
+              <strong id="luluStarts">0</strong>
+              <span>people used Lulu</span>
+            </article>
+          </section>
+        </aside>
       </section>
 
       <section class="quote-strip" id="examples" aria-label="Things Lulu might say">
@@ -67,12 +83,12 @@
         </article>
       </section>
 
-      <section class="privacy-section" id="privacy" aria-label="Privacy and safety">
+      <section class="privacy-section" id="privacy" aria-label="Privacy and emotional support">
         <div>
           <p class="eyebrow">Private by design</p>
-          <h2>No recordings. No diary. Just the call.</h2>
+          <h2>No recordings. No diary. Just Lulu.</h2>
         </div>
-        <p>Lulu is built for hotline-style self-help. We do not record your calls, save what you say, or build a personal profile from your distress. The counters on this page are anonymous totals only.</p>
+        <p>Lulu is built for emotional support and self-help by phone. We do not record your calls, save what you say, or build a personal profile from your distress. The number on this page is an anonymous total only.</p>
       </section>
 
       <section class="details-grid" aria-label="About Lulu">
@@ -87,7 +103,7 @@
       </section>
 
       <footer class="footer">
-        <p>Safety Companion is self-help support, not a therapist, clinician, or emergency service.</p>
+        <p>Lulu is a friend and emotional companion for self-help support, not a therapist, clinician, or emergency service.</p>
         <a data-track-call href="tel:+14159085000">Call Lulu</a>
       </footer>
     </main>

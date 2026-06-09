@@ -40,7 +40,7 @@ except ImportError:
 load_dotenv(".env.local")
 load_dotenv()
 
-logger = logging.getLogger("safety-companion-agent")
+logger = logging.getLogger("lulu-companion-agent")
 logging.basicConfig(level=os.getenv("LOG_LEVEL", "INFO"))
 
 AGENT_NAME = os.getenv("LIVEKIT_AGENT_NAME", "safety-companion")
@@ -123,7 +123,7 @@ class SafetyCompanion(Agent):
     def __init__(self, moss_client=None, index_name=MOSS_INDEX_NAME) -> None:
         super().__init__(
             instructions=(
-                "You are a soft-spoken safety companion named Lulu. "
+                "You are a soft-spoken emotional companion named Lulu. "
                 "You provide voice-guided emotional support for anxiety, loneliness, panic, emotional overwhelm, "
                 "and moments when staying safe feels difficult. "
                 "Use a professional mental-health support style: ask open questions, acknowledge effort, "
@@ -151,7 +151,7 @@ class SafetyCompanion(Agent):
         self.index_name = index_name
 
     async def on_enter(self) -> None:
-        logger.info("SafetyCompanion activated")
+        logger.info("Lulu emotional companion activated")
 
     async def on_user_turn_completed(self, turn_ctx: ChatContext, new_message: ChatMessage) -> None:
         user_query = new_message.text_content or ""
@@ -177,7 +177,7 @@ class SafetyCompanion(Agent):
                     turn_ctx.add_message(
                         role="system",
                         content=(
-                            "Relevant Safety Companion context:\n"
+                            "Relevant Lulu support context:\n"
                             f"{context}\n\nUse this context for a specific supportive response and one safe action."
                         ),
                     )
@@ -243,7 +243,7 @@ async def entrypoint(ctx: JobContext) -> None:
     )
     if background_audio:
         await background_audio.start(room=ctx.room, agent_session=session)
-    logger.info("Safety Companion ready to greet caller")
+    logger.info("Lulu ready to greet caller")
     await session.generate_reply(
         instructions=(
             "Greet the caller in one short, warm sentence. Always introduce yourself as Lulu. Say: "

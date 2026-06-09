@@ -1,10 +1,7 @@
 const metricEls = {
-  luluStarts: document.querySelector("#luluStarts"),
-  callClicks: document.querySelector("#callClicks"),
-  checkIns: document.querySelector("#checkIns")
+  luluStarts: document.querySelector("#luluStarts")
 };
 
-const markCheckIn = document.querySelector("#markCheckIn");
 const callLinks = document.querySelectorAll("[data-track-call]");
 
 initLanding();
@@ -18,15 +15,6 @@ async function initLanding() {
     });
   });
 
-  markCheckIn?.addEventListener("click", async () => {
-    markCheckIn.disabled = true;
-    markCheckIn.textContent = "Counted";
-    renderMetrics(await postMetric("/api/metrics/check-in"));
-    setTimeout(() => {
-      markCheckIn.disabled = false;
-      markCheckIn.textContent = "I checked in with Lulu";
-    }, 1600);
-  });
 }
 
 async function getMetrics() {
@@ -35,7 +23,7 @@ async function getMetrics() {
     if (!response.ok) throw new Error("Metrics unavailable");
     return response.json();
   } catch {
-    return { luluStarts: 0, callClicks: 0, checkIns: 0 };
+    return { luluStarts: 0, livekitCalls: 0, callClicks: 0 };
   }
 }
 
@@ -58,9 +46,7 @@ function sendMetric(path) {
 }
 
 function renderMetrics(metrics) {
-  setMetric(metricEls.luluStarts, metrics.luluStarts);
-  setMetric(metricEls.callClicks, metrics.callClicks);
-  setMetric(metricEls.checkIns, metrics.checkIns);
+  setMetric(metricEls.luluStarts, metrics.livekitCalls || metrics.luluStarts || metrics.callClicks);
 }
 
 function setMetric(element, value) {
@@ -70,9 +56,7 @@ function setMetric(element, value) {
 
 function getCurrentMetrics() {
   return {
-    luluStarts: metricNumber(metricEls.luluStarts),
-    callClicks: metricNumber(metricEls.callClicks),
-    checkIns: metricNumber(metricEls.checkIns)
+    luluStarts: metricNumber(metricEls.luluStarts)
   };
 }
 

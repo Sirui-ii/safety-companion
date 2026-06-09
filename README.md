@@ -1,10 +1,10 @@
-# Safety Companion
+# Lulu Friend & Companion
 
-Safety Companion is a voice-guided emotional support app for anxiety, loneliness, panic, emotional overwhelm, and moments when staying safe feels difficult.
+Lulu is a voice-guided AI friend and emotional companion for anxiety, loneliness, panic, emotional overwhelm, and moments when staying safe feels difficult.
 
 The product gives people a simple way to check in, name what they are feeling, identify what may have raised the intensity, choose one immediate safety action, and decide who they can contact for support.
 
-Safety Companion is not a therapist, clinician, emergency service, or replacement for medical care. If someone may hurt themselves or cannot stay safe, the app directs them to emergency services and to call/text 988 in the U.S. and Canada.
+Lulu is not a therapist, clinician, emergency service, or replacement for medical care. If someone may hurt themselves or cannot stay safe, the app directs them to emergency services and to call/text 988 in the U.S. and Canada.
 
 ## Live App
 
@@ -15,8 +15,9 @@ The website is deployed on Vercel. The phone agent currently requires a LiveKit 
 
 ## Features
 
-- Professional mental-health support copy and UX.
-- Web check-in flow for emotional state, intensity, previous helpers, and support contact.
+- Simple friend-and-companion landing page with a direct phone CTA.
+- Anonymous usage number for Lulu call starts.
+- Save-to-contacts button with Lulu's contact photo and phone number.
 - Crisis-aware safety routing for emergency services and 988.
 - LiveKit phone worker for voice conversations.
 - ElevenLabs voice through LiveKit Inference.
@@ -142,14 +143,14 @@ python3 -m unittest tests/test_safety_companion.py
 
 ## Safety Boundaries
 
-Safety Companion should:
+Lulu should:
 
 - Ask clear, simple questions.
 - Help the user identify feelings, triggers, needs, and immediate safety actions.
 - Encourage contacting emergency services or 988 when there is immediate danger.
 - Avoid diagnosis, clinical claims, promises of rescue, or replacing therapy.
 
-Safety Companion should not:
+Lulu should not:
 
 - Present itself as a licensed clinician.
 - Diagnose the user.
