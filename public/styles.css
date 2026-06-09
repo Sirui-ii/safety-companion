@@ -109,6 +109,32 @@ button {
   transform: translateY(0);
 }
 
+.ticker {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(23, 35, 31, 0.08);
+  background: rgba(232, 247, 167, 0.72);
+  backdrop-filter: blur(14px);
+}
+
+.ticker-track {
+  display: flex;
+  width: max-content;
+  gap: 36px;
+  padding: 8px 0 8px 18px;
+  animation: tickerMove 42s linear infinite;
+}
+
+.ticker-track span {
+  color: #456045;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
 .landing-shell {
   position: relative;
   width: min(1180px, calc(100% - 32px));
@@ -660,6 +686,15 @@ button:focus-visible {
   }
 }
 
+@keyframes tickerMove {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 @keyframes floatCard {
   0%,
   100% {
@@ -755,6 +790,11 @@ button:focus-visible {
 }
 
 @media (max-width: 860px) {
+  .ticker-track {
+    gap: 28px;
+    animation-duration: 36s;
+  }
+
   .topbar {
     align-items: flex-start;
   }
