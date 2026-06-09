@@ -74,6 +74,7 @@ class SafetyCompanionTests(unittest.TestCase):
         self.assertIn("one small next step", page)
         self.assertIn("Start with anything", page)
         self.assertIn("Tell Lulu anything", page)
+        self.assertIn("Practice social skills with Lulu", page)
         self.assertIn("No shame", page)
         self.assertIn("Here 24/7", page)
         self.assertIn("24/7 available", page)
