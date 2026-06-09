@@ -34,7 +34,7 @@
           <span>Lulu</span>
         </a>
         <nav>
-          <a class="nav-call" data-track-call href="tel:+14159085000">Call Lulu</a>
+          <a class="nav-call" href="#lead-form">Get number</a>
         </nav>
       </header>
 
@@ -74,10 +74,45 @@
             <span></span>
           </div>
           <p class="card-note">Start with anything. Lulu will meet you there.</p>
-          <div class="call-stack" aria-label="Call Lulu">
-            <a class="number-cta" data-track-call href="tel:+14159085000" aria-label="Call Lulu at +1 415 908 5000">
+          <form class="lead-form" id="lead-form" aria-label="Get Lulu's phone number">
+            <div class="lead-heading">
+              <span>Add your phone number</span>
+              <p>Unlock Lulu's contact and help us understand who is using her.</p>
+            </div>
+            <div class="lead-grid">
+              <label>
+                <span>First name</span>
+                <input autocomplete="given-name" name="firstName" required>
+              </label>
+              <label>
+                <span>Last name</span>
+                <input autocomplete="family-name" name="lastName" required>
+              </label>
+              <label class="wide-field">
+                <span>Phone number</span>
+                <input autocomplete="tel" inputmode="tel" name="phone" required>
+              </label>
+              <label class="wide-field">
+                <span>Email</span>
+                <input autocomplete="email" inputmode="email" name="email" required type="email">
+              </label>
+            </div>
+            <label class="consent-row">
+              <input name="smsOptIn" type="checkbox">
+              <span>I agree Lulu may text or call me about updates.</span>
+            </label>
+            <label class="consent-row">
+              <input name="emailOptIn" type="checkbox">
+              <span>Subscribe me to Lulu email updates.</span>
+            </label>
+            <p class="lead-privacy">We do not record calls or save what you say to Lulu.</p>
+            <button class="unlock-button" type="submit">Unlock Lulu's number</button>
+            <p class="lead-status" role="status"></p>
+          </form>
+          <div class="call-stack is-locked" aria-label="Call Lulu" data-gated-actions hidden>
+            <a class="number-cta" data-track-call href="#" aria-label="Call Lulu">
               <span>Call Lulu</span>
-              <strong>+1 (415) 908-5000</strong>
+              <strong data-phone-label>Number unlocked</strong>
             </a>
             <a class="contact-action" data-track-contact href="/lulu.vcf" download="Lulu.vcf">
               <img src="/lulu-contact.jpg" alt="" width="36" height="36">
@@ -103,7 +138,7 @@
 
       <footer class="footer">
         <p>Private companion support by phone.</p>
-        <a data-track-call href="tel:+14159085000">Call Lulu</a>
+        <a href="#lead-form">Get number</a>
       </footer>
     </main>
 

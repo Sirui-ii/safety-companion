@@ -18,11 +18,13 @@ const metrics = globalThis.__luluMetrics || {
   contactSaves: 0,
   checkIns: 0,
   pageViews: 0,
+  leads: 0,
   activeSessions: new Map(),
   updatedAt: null
 };
 globalThis.__luluMetrics = metrics;
 if (!metrics.activeSessions) metrics.activeSessions = new Map();
+if (typeof metrics.leads !== "number") metrics.leads = 0;
 const mimeTypes = new Map([
   [".html", "text/html; charset=utf-8"],
   [".css", "text/css; charset=utf-8"],
@@ -90,6 +92,17 @@ export async function handleRequest(req, res) {
       }
       metrics.updatedAt = new Date().toISOString();
       return sendJson(res, 200, publicMetrics());
+    }
+
+    if (req.method === "POST" && url.pathname === "/api/leads") {
+      const body = await readJson(req);
+      const lead = normalizeLead(body);
+      const validation = validateLead(lead);
+      if (validation) return sendJson(res, 400, { error: validation });
+      const notion = await saveLeadToNotion(lead);
+      metrics.leads += 1;
+      metrics.updatedAt = new Date().toISOString();
+      return sendJson(res, 200, { ok: true, notion, metrics: publicMetrics() });
     }
 
     if (req.method === "POST" && url.pathname === "/api/livekit-webhook") {
@@ -222,6 +235,7 @@ function publicMetrics() {
     contactSaves: metrics.contactSaves,
     checkIns: metrics.checkIns,
     pageViews: metrics.pageViews,
+    leads: metrics.leads,
     activeNow: metrics.activeSessions.size,
     updatedAt: metrics.updatedAt
   };
@@ -236,6 +250,73 @@ function pruneActiveSessions() {
 
 function cleanSessionId(value) {
   return String(value).replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 80);
+}
+
+function normalizeLead(body) {
+  return {
+    firstName: cleanText(body.firstName, 80),
+    lastName: cleanText(body.lastName, 80),
+    phone: cleanPhone(body.phone),
+    email: cleanText(body.email, 160).toLowerCase(),
+    smsOptIn: Boolean(body.smsOptIn),
+    emailOptIn: Boolean(body.emailOptIn),
+    sessionId: cleanSessionId(body.sessionId || ""),
+    createdAt: new Date().toISOString(),
+    source: "Lulu landing page"
+  };
+}
+
+function validateLead(lead) {
+  if (!lead.firstName) return "First name is required.";
+  if (!lead.lastName) return "Last name is required.";
+  if (!/^\+?[0-9 .()/-]{7,24}$/.test(lead.phone)) return "Enter a valid phone number.";
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(lead.email)) return "Enter a valid email address.";
+  return "";
+}
+
+function cleanText(value, maxLength) {
+  return String(value || "").replace(/\s+/g, " ").trim().slice(0, maxLength);
+}
+
+function cleanPhone(value) {
+  return cleanText(value, 32).replace(/[^\d+ .()/-]/g, "");
+}
+
+async function saveLeadToNotion(lead) {
+  const apiKey = process.env.NOTION_API_KEY;
+  const databaseId = process.env.NOTION_LEADS_DATABASE_ID;
+  if (!apiKey || !databaseId) return { saved: false, reason: "missing_notion_env" };
+
+  const response = await fetch("https://api.notion.com/v1/pages", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+      "Notion-Version": "2022-06-28"
+    },
+    body: JSON.stringify({
+      parent: { database_id: databaseId },
+      properties: {
+        Name: { title: [{ text: { content: `${lead.firstName} ${lead.lastName}` } }] },
+        "First Name": { rich_text: [{ text: { content: lead.firstName } }] },
+        "Last Name": { rich_text: [{ text: { content: lead.lastName } }] },
+        Phone: { phone_number: lead.phone },
+        Email: { email: lead.email },
+        "SMS Opt In": { checkbox: lead.smsOptIn },
+        "Email Opt In": { checkbox: lead.emailOptIn },
+        Source: { rich_text: [{ text: { content: lead.source } }] },
+        "Session ID": { rich_text: [{ text: { content: lead.sessionId } }] },
+        "Created At": { date: { start: lead.createdAt } }
+      }
+    })
+  });
+
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    console.error("Notion lead save failed", data?.message || response.status);
+    return { saved: false, reason: "notion_error" };
+  }
+  return { saved: true, pageId: data.id };
 }
 
 async function createLuluVcard() {

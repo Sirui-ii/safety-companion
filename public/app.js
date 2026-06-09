@@ -4,9 +4,15 @@ const metricEls = {
 };
 
 const LULU_SESSION_KEY = "lulu_session_id";
+const LULU_LEAD_KEY = "lulu_lead_submitted";
+const LULU_PHONE_HREF = "tel:+14159085000";
+const LULU_PHONE_LABEL = "+1 (415) 908-5000";
 const callLinks = document.querySelectorAll("[data-track-call]");
 const contactLinks = document.querySelectorAll("[data-track-contact]");
 const companionCard = document.querySelector(".companion-card");
+const leadForm = document.querySelector("#lead-form");
+const gatedActions = document.querySelector("[data-gated-actions]");
+const phoneLabel = document.querySelector("[data-phone-label]");
 const rootStyle = document.documentElement.style;
 
 initLanding();
@@ -16,6 +22,7 @@ async function initLanding() {
   renderMetrics(await getMetrics());
   await postActiveMetric();
   window.setInterval(postActiveMetric, 30_000);
+  if (sessionStorage.getItem(LULU_LEAD_KEY) === "true") unlockLuluActions();
 
   callLinks.forEach((link) => {
     link.addEventListener("click", () => {
@@ -29,6 +36,7 @@ async function initLanding() {
     });
   });
 
+  leadForm?.addEventListener("submit", handleLeadSubmit);
 }
 
 async function getMetrics() {
@@ -57,6 +65,55 @@ function sendMetric(path) {
     return;
   }
   fetch(path, { method: "POST", keepalive: true }).catch(() => {});
+}
+
+async function handleLeadSubmit(event) {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const status = form.querySelector(".lead-status");
+  const button = form.querySelector("button[type='submit']");
+  const formData = new FormData(form);
+  const payload = {
+    firstName: String(formData.get("firstName") || ""),
+    lastName: String(formData.get("lastName") || ""),
+    phone: String(formData.get("phone") || ""),
+    email: String(formData.get("email") || ""),
+    smsOptIn: formData.get("smsOptIn") === "on",
+    emailOptIn: formData.get("emailOptIn") === "on",
+    sessionId: getSessionId()
+  };
+
+  setLeadStatus(status, "Saving...");
+  if (button) button.disabled = true;
+  try {
+    const response = await fetch("/api/leads", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(data.error || "Could not save your details.");
+    sessionStorage.setItem(LULU_LEAD_KEY, "true");
+    unlockLuluActions();
+    setLeadStatus(status, "You're in. Lulu's number is ready.");
+    renderMetrics(data.metrics || getCurrentMetrics());
+  } catch (error) {
+    setLeadStatus(status, error.message || "Could not save your details. Please try again.");
+  } finally {
+    if (button) button.disabled = false;
+  }
+}
+
+function unlockLuluActions() {
+  if (phoneLabel) phoneLabel.textContent = LULU_PHONE_LABEL;
+  callLinks.forEach((link) => link.setAttribute("href", LULU_PHONE_HREF));
+  if (gatedActions) gatedActions.hidden = false;
+  leadForm?.classList.add("is-complete");
+}
+
+function setLeadStatus(element, message) {
+  if (!element) return;
+  element.textContent = message;
 }
 
 async function postActiveMetric() {

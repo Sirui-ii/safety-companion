@@ -19,6 +19,8 @@ The website is deployed on Vercel. The phone agent currently requires a LiveKit 
 - Anonymous usage number for Lulu call starts.
 - Save-to-contacts button with Lulu's contact photo and phone number.
 - Privacy-preserving success metrics for call taps, LiveKit call starts, contact saves, and self-help check-ins.
+- Optional lead capture gate before showing Lulu's number, with explicit SMS and email opt-ins.
+- Optional Notion lead database sync for hackathon usage tracking.
 - Crisis-aware safety routing for emergency services and 988.
 - LiveKit phone worker for voice conversations.
 - ElevenLabs voice through LiveKit Inference.
@@ -151,10 +153,37 @@ Recommended metrics:
 - `livekitCalls`: real call/session starts from the LiveKit webhook.
 - `callClicks`: people tapping the phone CTA on the website.
 - `contactSaves`: people saving Lulu to their contacts.
+- `leads`: people who submitted the contact form before unlocking the number.
 - `luluStarts`: anonymous total starts shown on the landing page.
 - Duration buckets and repeat usage can be added later with a durable analytics store.
 
-Do not record calls, store transcripts, save phone numbers, or build distress profiles unless a user explicitly opts in. The current counters are anonymous and in-memory; use Vercel KV, Postgres, Supabase, or PostHog if durable analytics are needed.
+Do not record calls, store transcripts, or build distress profiles unless a user explicitly opts in. If collecting names, phone numbers, or emails, keep the opt-ins separate and clear. The current counters are anonymous and in-memory; lead capture can sync to Notion when `NOTION_API_KEY` and `NOTION_LEADS_DATABASE_ID` are configured.
+
+## Notion Lead Capture
+
+Create a Notion integration, share a leads database with it, then add these Vercel env vars:
+
+```bash
+NOTION_API_KEY=
+NOTION_LEADS_DATABASE_ID=
+```
+
+The Notion database should include these properties:
+
+```text
+Name: title
+First Name: text
+Last Name: text
+Phone: phone
+Email: email
+SMS Opt In: checkbox
+Email Opt In: checkbox
+Source: text
+Session ID: text
+Created At: date
+```
+
+If those env vars are missing, the form still unlocks Lulu's number, but the response will report `missing_notion_env` and the lead will not be durable on Vercel.
 
 ## Safety Boundaries
 
