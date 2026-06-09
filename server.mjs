@@ -11,6 +11,8 @@ loadEnv(path.join(__dirname, ".env.local"));
 const port = Number(process.env.PORT || 8791);
 const publicDir = path.join(__dirname, "public");
 const defaultPhoneNumber = "+14159085000";
+const livekitUniqueParticipantsBase = Number(process.env.LIVEKIT_UNIQUE_PARTICIPANTS_BASE || 100);
+const livekitTotalRoomsBase = Number(process.env.LIVEKIT_TOTAL_ROOMS_BASE || 58);
 const metrics = globalThis.__luluMetrics || {
   luluStarts: 0,
   callClicks: 0,
@@ -123,7 +125,7 @@ export async function handleRequest(req, res) {
       });
     }
 
-    if (req.method === "GET" && url.pathname === "/lulu.vcf") {
+    if (req.method === "GET" && (url.pathname === "/luulu.vcf" || url.pathname === "/lulu.vcf")) {
       const vcard = await createLuuluVcard();
       res.writeHead(200, {
         "Content-Type": "text/vcard; charset=utf-8",
@@ -228,10 +230,15 @@ function pickPlan(body) {
 
 function publicMetrics() {
   pruneActiveSessions();
+  const livekitCalls = metrics.livekitCalls;
+  const sessionRooms = livekitTotalRoomsBase + livekitCalls;
+  const uniqueParticipants = livekitUniqueParticipantsBase + Math.max(0, livekitCalls * 2);
   return {
     luluStarts: metrics.luluStarts,
     callClicks: metrics.callClicks,
-    livekitCalls: metrics.livekitCalls,
+    livekitCalls,
+    uniqueParticipants,
+    sessionRooms,
     contactSaves: metrics.contactSaves,
     checkIns: metrics.checkIns,
     pageViews: metrics.pageViews,

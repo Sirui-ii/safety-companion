@@ -1,18 +1,14 @@
 const metricEls = {
   luluStarts: document.querySelector("#luluStarts"),
+  sessionRooms: document.querySelector("#sessionRooms"),
   activeNow: document.querySelector("#activeNow")
 };
 
 const LULU_SESSION_KEY = "lulu_session_id";
-const LULU_LEAD_KEY = "lulu_lead_submitted";
-const LULU_PHONE_HREF = "tel:+14159085000";
-const LULU_PHONE_LABEL = "+1 (415) 908-5000";
 const callLinks = document.querySelectorAll("[data-track-call]");
 const contactLinks = document.querySelectorAll("[data-track-contact]");
 const companionCard = document.querySelector(".companion-card");
 const leadForm = document.querySelector("#lead-form");
-const gatedActions = document.querySelector("[data-gated-actions]");
-const phoneLabel = document.querySelector("[data-phone-label]");
 const rootStyle = document.documentElement.style;
 
 initLanding();
@@ -22,7 +18,7 @@ async function initLanding() {
   renderMetrics(await getMetrics());
   await postActiveMetric();
   window.setInterval(postActiveMetric, 30_000);
-  if (sessionStorage.getItem(LULU_LEAD_KEY) === "true") unlockLuuluActions();
+  window.setInterval(refreshMetrics, 10_000);
 
   callLinks.forEach((link) => {
     link.addEventListener("click", () => {
@@ -37,6 +33,10 @@ async function initLanding() {
   });
 
   leadForm?.addEventListener("submit", handleLeadSubmit);
+}
+
+async function refreshMetrics() {
+  renderMetrics(await getMetrics());
 }
 
 async function getMetrics() {
@@ -78,8 +78,8 @@ async function handleLeadSubmit(event) {
     lastName: String(formData.get("lastName") || ""),
     phone: String(formData.get("phone") || ""),
     email: String(formData.get("email") || ""),
-    smsOptIn: formData.get("smsOptIn") === "on",
-    emailOptIn: formData.get("emailOptIn") === "on",
+    smsOptIn: formData.get("subscribeOptIn") === "on",
+    emailOptIn: formData.get("subscribeOptIn") === "on",
     sessionId: getSessionId()
   };
 
@@ -93,22 +93,14 @@ async function handleLeadSubmit(event) {
     });
     const data = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(data.error || "Could not save your details.");
-    sessionStorage.setItem(LULU_LEAD_KEY, "true");
-    unlockLuuluActions();
-    setLeadStatus(status, "You're in. Luulu's number is ready.");
+    form.reset();
+    setLeadStatus(status, "You're subscribed. We'll keep you posted.");
     renderMetrics(data.metrics || getCurrentMetrics());
   } catch (error) {
     setLeadStatus(status, error.message || "Could not save your details. Please try again.");
   } finally {
     if (button) button.disabled = false;
   }
-}
-
-function unlockLuuluActions() {
-  if (phoneLabel) phoneLabel.textContent = LULU_PHONE_LABEL;
-  callLinks.forEach((link) => link.setAttribute("href", LULU_PHONE_HREF));
-  if (gatedActions) gatedActions.hidden = false;
-  leadForm?.classList.add("is-complete");
 }
 
 function setLeadStatus(element, message) {
@@ -132,7 +124,8 @@ async function postActiveMetric() {
 }
 
 function renderMetrics(metrics) {
-  setMetric(metricEls.luluStarts, metrics.livekitCalls || metrics.luluStarts || metrics.callClicks);
+  setMetric(metricEls.luluStarts, metrics.uniqueParticipants || metrics.livekitCalls || metrics.luluStarts || metrics.callClicks);
+  setMetric(metricEls.sessionRooms, metrics.sessionRooms || metrics.livekitCalls);
   setMetric(metricEls.activeNow, metrics.activeNow);
 }
 
@@ -144,6 +137,7 @@ function setMetric(element, value) {
 function getCurrentMetrics() {
   return {
     luluStarts: metricNumber(metricEls.luluStarts),
+    sessionRooms: metricNumber(metricEls.sessionRooms),
     activeNow: metricNumber(metricEls.activeNow)
   };
 }

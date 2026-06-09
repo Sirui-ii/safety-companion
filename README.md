@@ -19,7 +19,7 @@ The website is deployed on Vercel. The phone agent currently requires a LiveKit 
 - Anonymous usage number for Luulu call starts.
 - Save-to-contacts button with Luulu's contact photo and phone number.
 - Privacy-preserving success metrics for call taps, LiveKit call starts, contact saves, and self-help check-ins.
-- Optional lead capture gate before showing Luulu's number, with explicit SMS and email opt-ins.
+- Optional update/event subscription form with explicit mailing-list and phone-update opt-in.
 - Optional Notion lead database sync for hackathon usage tracking.
 - Crisis-aware safety routing for emergency services and 988.
 - LiveKit phone worker for voice conversations.
@@ -153,11 +153,21 @@ Recommended metrics:
 - `livekitCalls`: real call/session starts from the LiveKit webhook.
 - `callClicks`: people tapping the phone CTA on the website.
 - `contactSaves`: people saving Luulu to their contacts.
-- `leads`: people who submitted the contact form before unlocking the number.
+- `uniqueParticipants`: public LiveKit-style reach number, seeded from dashboard stats and incremented from LiveKit webhook activity.
+- `sessionRooms`: public session/room number, seeded from dashboard stats and incremented from LiveKit webhook activity.
+- `activeNow`: anonymous browser sessions active in the last 90 seconds.
+- `leads`: people who subscribed for Luulu updates and events.
 - `luluStarts`: anonymous total starts shown on the landing page.
 - Duration buckets and repeat usage can be added later with a durable analytics store.
 
-Do not record calls, store transcripts, or build distress profiles unless a user explicitly opts in. If collecting names, phone numbers, or emails, keep the opt-ins separate and clear. The current counters are anonymous and in-memory; lead capture can sync to Notion when `NOTION_API_KEY` and `NOTION_LEADS_DATABASE_ID` are configured.
+Do not record calls, store transcripts, or build distress profiles unless a user explicitly opts in. If collecting names, phone numbers, or emails, keep the opt-in clear. The current counters are anonymous and in-memory; lead capture can sync to Notion when `NOTION_API_KEY` and `NOTION_LEADS_DATABASE_ID` are configured.
+
+The landing page can start from existing LiveKit dashboard totals:
+
+```bash
+LIVEKIT_UNIQUE_PARTICIPANTS_BASE=100
+LIVEKIT_TOTAL_ROOMS_BASE=58
+```
 
 ## Notion Lead Capture
 
@@ -183,7 +193,7 @@ Session ID: text
 Created At: date
 ```
 
-If those env vars are missing, the form still unlocks Luulu's number, but the response will report `missing_notion_env` and the lead will not be durable on Vercel.
+If those env vars are missing, the form still works on the page, but the response will report `missing_notion_env` and the lead will not be durable on Vercel.
 
 ## Safety Boundaries
 
