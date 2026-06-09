@@ -286,7 +286,12 @@ function cleanText(value, maxLength) {
 }
 
 function cleanPhone(value) {
-  return cleanText(value, 32).replace(/[^\d+ .()/-]/g, "");
+  const cleaned = cleanText(value, 32).replace(/[^\d+ .()/-]/g, "");
+  const digits = cleaned.replace(/\D/g, "");
+  if (!digits) return "";
+  if (cleaned.trim().startsWith("+")) return `+${digits}`;
+  if (digits.length === 10) return `+1${digits}`;
+  return digits;
 }
 
 async function saveLeadToNotion(lead) {
@@ -294,26 +299,33 @@ async function saveLeadToNotion(lead) {
   const databaseId = process.env.NOTION_LEADS_DATABASE_ID;
   if (!apiKey || !databaseId) return { saved: false, reason: "missing_notion_env" };
 
+  const duplicate = await findDuplicateLead(apiKey, databaseId, lead);
+  if (duplicate.found) {
+    return {
+      saved: false,
+      duplicate: true,
+      reason: "duplicate_lead",
+      matchedBy: duplicate.matchedBy,
+      pageId: duplicate.pageId
+    };
+  }
+
   const response = await fetch("https://api.notion.com/v1/pages", {
     method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-      "Notion-Version": "2022-06-28"
-    },
+    headers: notionHeaders(apiKey),
     body: JSON.stringify({
       parent: { database_id: databaseId },
       properties: {
         Name: { title: [{ text: { content: `${lead.firstName} ${lead.lastName}` } }] },
         "First Name": { rich_text: [{ text: { content: lead.firstName } }] },
         "Last Name": { rich_text: [{ text: { content: lead.lastName } }] },
-        Phone: { phone_number: lead.phone },
-        Email: { email: lead.email },
-        "SMS Opt In": { checkbox: lead.smsOptIn },
-        "Email Opt In": { checkbox: lead.emailOptIn },
+        Phone: { rich_text: [{ text: { content: lead.phone } }] },
+        Email: { rich_text: [{ text: { content: lead.email } }] },
+        "SMS Opt In": { rich_text: [{ text: { content: lead.smsOptIn ? "Yes" : "No" } }] },
+        "Email Opt In": { rich_text: [{ text: { content: lead.emailOptIn ? "Yes" : "No" } }] },
         Source: { rich_text: [{ text: { content: lead.source } }] },
         "Session ID": { rich_text: [{ text: { content: lead.sessionId } }] },
-        "Created At": { date: { start: lead.createdAt } }
+        "Created At": { rich_text: [{ text: { content: lead.createdAt } }] }
       }
     })
   });
@@ -324,6 +336,49 @@ async function saveLeadToNotion(lead) {
     return { saved: false, reason: "notion_error" };
   }
   return { saved: true, pageId: data.id };
+}
+
+async function findDuplicateLead(apiKey, databaseId, lead) {
+  const response = await fetch(`https://api.notion.com/v1/databases/${databaseId}/query`, {
+    method: "POST",
+    headers: notionHeaders(apiKey),
+    body: JSON.stringify({
+      page_size: 1,
+      filter: {
+        or: [
+          { property: "Email", rich_text: { equals: lead.email } },
+          { property: "Phone", rich_text: { equals: lead.phone } }
+        ]
+      }
+    })
+  });
+
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    console.error("Notion duplicate check failed", data?.message || response.status);
+    return { found: false };
+  }
+
+  const page = data.results?.[0];
+  if (!page) return { found: false };
+  const matchedBy = getNotionPlainText(page.properties?.Email) === lead.email ? "email" : "phone";
+  return { found: true, matchedBy, pageId: page.id };
+}
+
+function getNotionPlainText(property) {
+  return (property?.rich_text || property?.title || [])
+    .map((part) => part?.plain_text || part?.text?.content || "")
+    .join("")
+    .trim()
+    .toLowerCase();
+}
+
+function notionHeaders(apiKey) {
+  return {
+    Authorization: `Bearer ${apiKey}`,
+    "Content-Type": "application/json",
+    "Notion-Version": "2022-06-28"
+  };
 }
 
 async function createLuuluVcard() {

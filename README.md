@@ -160,7 +160,7 @@ Recommended metrics:
 - `luluStarts`: anonymous total starts shown on the landing page.
 - Duration buckets and repeat usage can be added later with a durable analytics store.
 
-Do not record calls, store transcripts, or build distress profiles unless a user explicitly opts in. If collecting names, phone numbers, or emails, keep the opt-in clear. The current counters are anonymous and in-memory; lead capture can sync to Notion when `NOTION_API_KEY` and `NOTION_LEADS_DATABASE_ID` are configured.
+Do not record calls, store transcripts, or build distress profiles unless a user explicitly opts in. If collecting names, phone numbers, or emails, keep the opt-in clear. The current counters are anonymous and in-memory; lead capture can sync to Notion when `NOTION_API_KEY` and `NOTION_LEADS_DATABASE_ID` are configured. Before creating a Notion row, Luulu checks for an existing matching email or normalized phone number and skips duplicate records.
 
 The landing page can start from existing LiveKit dashboard totals:
 
