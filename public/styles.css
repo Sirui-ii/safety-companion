@@ -197,8 +197,8 @@ button {
 .hero {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: clamp(16px, 3vw, 26px);
+  grid-template-columns: minmax(0, 0.92fr) minmax(350px, 430px);
+  gap: clamp(34px, 6vw, 84px);
   align-items: center;
   min-height: calc(100dvh - 84px);
   perspective: 1200px;
@@ -268,8 +268,8 @@ button {
   animation: rise 700ms ease both;
   transform: translate3d(0, calc(var(--scroll-progress, 0) * -20px), 0);
   display: grid;
-  justify-items: center;
-  text-align: center;
+  justify-items: start;
+  text-align: left;
 }
 
 .eyebrow {
@@ -301,19 +301,41 @@ h1 {
 
 .lede {
   max-width: 420px;
-  margin: 12px auto 0;
+  margin: 14px 0 0;
   color: var(--muted);
   font-size: clamp(17px, 1.45vw, 21px);
   line-height: 1.5;
 }
 
+.human-notes {
+  display: grid;
+  gap: 10px;
+  width: min(440px, 100%);
+  margin-top: clamp(22px, 3vw, 34px);
+}
+
+.human-notes p {
+  margin: 0;
+  border-left: 2px solid rgba(44, 134, 103, 0.22);
+  padding: 7px 0 7px 15px;
+  color: #3f4c46;
+  font-size: clamp(17px, 1.7vw, 22px);
+  font-weight: 620;
+  line-height: 1.24;
+  text-wrap: pretty;
+}
+
+.human-notes p:nth-child(2) {
+  color: var(--mint-deep);
+}
+
 .call-stack {
-  display: flex;
-  flex-wrap: wrap;
+  position: relative;
+  z-index: 2;
+  display: grid;
   gap: 12px;
-  align-items: stretch;
-  justify-content: center;
-  margin-top: 20px;
+  width: min(320px, 100%);
+  margin-top: 16px;
 }
 
 .number-cta,
@@ -328,6 +350,7 @@ h1 {
 .number-cta {
   display: inline-grid;
   grid-template-columns: auto;
+  justify-items: center;
   gap: 1px;
   background: var(--ink);
   color: var(--paper);
@@ -344,15 +367,17 @@ h1 {
 }
 
 .number-cta strong {
-  font-size: clamp(20px, 2.6vw, 30px);
+  font-size: clamp(20px, 2.1vw, 27px);
   font-weight: 800;
   letter-spacing: 0;
   line-height: 1.08;
+  white-space: nowrap;
 }
 
 .contact-action {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   background: rgba(255, 255, 255, 0.68);
   padding: 10px 18px 10px 12px;
@@ -398,8 +423,8 @@ h1 {
   background:
     linear-gradient(150deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.16)),
     linear-gradient(180deg, rgba(199, 244, 215, 0.42), rgba(216, 240, 248, 0.32));
-  width: min(390px, 100%);
-  margin: 0 auto;
+  width: min(430px, 100%);
+  margin: 0 0 0 auto;
   padding: clamp(16px, 2.6vw, 24px);
   text-align: center;
   box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.92);
@@ -586,11 +611,23 @@ h1 {
   animation-delay: 440ms;
 }
 
+.card-note {
+  position: relative;
+  z-index: 1;
+  max-width: 270px;
+  margin: 12px 0 0;
+  color: #50615a;
+  font-size: 16px;
+  font-weight: 620;
+  line-height: 1.35;
+}
+
 .metrics-panel {
   position: relative;
   z-index: 1;
   display: grid;
-  width: min(220px, 100%);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  width: min(320px, 100%);
   margin-top: 14px;
   border: 1px solid rgba(38, 48, 40, 0.12);
   border-radius: 18px;
@@ -600,21 +637,21 @@ h1 {
 }
 
 .metrics-panel article + article {
-  border-top: 1px solid rgba(38, 48, 40, 0.09);
+  border-left: 1px solid rgba(38, 48, 40, 0.09);
 }
 
 .metrics-panel article {
   display: grid;
   gap: 4px;
-  min-height: 68px;
+  min-height: 74px;
   place-items: center;
-  padding: 13px 16px;
+  padding: 13px 10px;
 }
 
 .metrics-panel strong {
   color: var(--mint-deep);
   font-family: ui-sans-serif, "Avenir Next", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
-  font-size: clamp(30px, 4vw, 42px);
+  font-size: clamp(28px, 3.6vw, 38px);
   font-weight: 560;
   line-height: 1;
 }
@@ -625,7 +662,7 @@ h1 {
   font-weight: 820;
   line-height: 1.15;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
 }
 
 .privacy-section,
@@ -814,6 +851,31 @@ button:focus-visible {
     grid-template-columns: 1fr;
   }
 
+  .hero-copy {
+    justify-items: center;
+    text-align: center;
+  }
+
+  .lede {
+    margin-inline: auto;
+  }
+
+  .human-notes {
+    width: min(330px, 100%);
+    justify-items: center;
+  }
+
+  .human-notes p {
+    border-left: 0;
+    max-width: 310px;
+    padding: 0;
+    font-size: 15px;
+  }
+
+  .companion-card {
+    margin-inline: auto;
+  }
+
   .hero {
     min-height: auto;
     padding-top: 42px;
@@ -824,7 +886,6 @@ button:focus-visible {
     opacity: 0.55;
   }
 
-  .call-stack,
   .number-cta,
   .contact-action {
     width: 100%;
@@ -861,6 +922,30 @@ button:focus-visible {
 
   .lede {
     max-width: 350px;
+  }
+
+  .companion-card {
+    width: 100%;
+    padding: 14px;
+  }
+
+  .holo-stage {
+    width: min(220px, 100%);
+  }
+
+  .voice-sim {
+    height: 38px;
+    margin-top: 0;
+  }
+
+  .card-note {
+    max-width: 260px;
+    margin-top: 8px;
+    font-size: 15px;
+  }
+
+  .call-stack {
+    margin-top: 12px;
   }
 
   .number-cta strong {
