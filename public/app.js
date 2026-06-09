@@ -1,7 +1,9 @@
 const metricEls = {
-  luluStarts: document.querySelector("#luluStarts")
+  luluStarts: document.querySelector("#luluStarts"),
+  activeNow: document.querySelector("#activeNow")
 };
 
+const LULU_SESSION_KEY = "lulu_session_id";
 const callLinks = document.querySelectorAll("[data-track-call]");
 const contactLinks = document.querySelectorAll("[data-track-contact]");
 const companionCard = document.querySelector(".companion-card");
@@ -12,6 +14,8 @@ initAmbientMotion();
 
 async function initLanding() {
   renderMetrics(await getMetrics());
+  await postActiveMetric();
+  window.setInterval(postActiveMetric, 30_000);
 
   callLinks.forEach((link) => {
     link.addEventListener("click", () => {
@@ -33,7 +37,7 @@ async function getMetrics() {
     if (!response.ok) throw new Error("Metrics unavailable");
     return response.json();
   } catch {
-    return { luluStarts: 0, livekitCalls: 0, callClicks: 0, contactSaves: 0 };
+    return { luluStarts: 0, livekitCalls: 0, callClicks: 0, contactSaves: 0, activeNow: 0 };
   }
 }
 
@@ -55,8 +59,24 @@ function sendMetric(path) {
   fetch(path, { method: "POST", keepalive: true }).catch(() => {});
 }
 
+async function postActiveMetric() {
+  try {
+    const response = await fetch("/api/metrics/active", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      keepalive: true,
+      body: JSON.stringify({ sessionId: getSessionId() })
+    });
+    if (!response.ok) throw new Error("Metrics unavailable");
+    renderMetrics(await response.json());
+  } catch {
+    renderMetrics(getCurrentMetrics());
+  }
+}
+
 function renderMetrics(metrics) {
   setMetric(metricEls.luluStarts, metrics.livekitCalls || metrics.luluStarts || metrics.callClicks);
+  setMetric(metricEls.activeNow, metrics.activeNow);
 }
 
 function setMetric(element, value) {
@@ -66,12 +86,22 @@ function setMetric(element, value) {
 
 function getCurrentMetrics() {
   return {
-    luluStarts: metricNumber(metricEls.luluStarts)
+    luluStarts: metricNumber(metricEls.luluStarts),
+    activeNow: metricNumber(metricEls.activeNow)
   };
 }
 
 function metricNumber(element) {
   return Number((element?.textContent || "0").replace(/[^\d]/g, "")) || 0;
+}
+
+function getSessionId() {
+  let sessionId = sessionStorage.getItem(LULU_SESSION_KEY);
+  if (!sessionId) {
+    sessionId = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+    sessionStorage.setItem(LULU_SESSION_KEY, sessionId);
+  }
+  return sessionId;
 }
 
 function initAmbientMotion() {

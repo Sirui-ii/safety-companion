@@ -3,10 +3,10 @@
   --ink: #17231f;
   --muted: #66736f;
   --paper: #fbfff8;
-  --cream: #fff8d9;
+  --cream: #f4f7ff;
   --mint: #c7f4d7;
   --mint-deep: #2c8667;
-  --lime: #e8f7a7;
+  --lime: #dff4ff;
   --peach: #ffcdb2;
   --rose: #f6b9c3;
   --blue: #d8f0f8;
@@ -32,8 +32,9 @@ body {
   color: var(--ink);
   background:
     radial-gradient(circle at 78% 22%, rgba(191, 248, 238, 0.56), transparent 28rem),
-    radial-gradient(circle at 14% 72%, rgba(255, 205, 178, 0.38), transparent 32rem),
-    linear-gradient(180deg, #fbfff8 0%, #f7fff9 48%, #fff8ea 100%);
+    radial-gradient(circle at 14% 72%, rgba(216, 240, 248, 0.46), transparent 32rem),
+    radial-gradient(circle at 72% 82%, rgba(246, 185, 195, 0.2), transparent 28rem),
+    linear-gradient(180deg, #fbfff8 0%, #f6fff9 48%, #f7fbff 100%);
   font-family: ui-sans-serif, "Avenir Next", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
 }
 
@@ -114,7 +115,7 @@ button {
   z-index: 1;
   overflow: hidden;
   border-bottom: 1px solid rgba(23, 35, 31, 0.08);
-  background: rgba(232, 247, 167, 0.72);
+  background: rgba(223, 244, 255, 0.72);
   backdrop-filter: blur(14px);
 }
 
@@ -168,7 +169,7 @@ button {
   height: 16px;
   border: 1px solid rgba(47, 127, 91, 0.2);
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--mint), var(--cream) 52%, var(--peach));
+  background: linear-gradient(135deg, var(--mint), var(--blue) 55%, var(--rose));
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
@@ -217,7 +218,7 @@ button {
   border: 1px solid rgba(255, 255, 255, 0.74);
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.62), rgba(191, 248, 238, 0.28)),
-    conic-gradient(from 90deg, rgba(191, 248, 238, 0.75), rgba(246, 185, 195, 0.58), rgba(255, 248, 217, 0.72), rgba(216, 240, 248, 0.72), rgba(191, 248, 238, 0.75));
+    conic-gradient(from 90deg, rgba(191, 248, 238, 0.75), rgba(246, 185, 195, 0.5), rgba(223, 244, 255, 0.72), rgba(216, 240, 248, 0.72), rgba(191, 248, 238, 0.75));
   box-shadow: 0 24px 70px rgba(44, 134, 103, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(12px);
   opacity: 0.78;
@@ -294,7 +295,7 @@ h1 {
   font-family: ui-sans-serif, "Avenir Next", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
   font-size: clamp(54px, 6.8vw, 88px);
   font-weight: 760;
-  letter-spacing: -0.045em;
+  letter-spacing: 0;
   line-height: 0.92;
 }
 
@@ -423,7 +424,7 @@ h1 {
 .companion-card::before {
   inset: -20%;
   opacity: 0.44;
-  background: conic-gradient(from 130deg, transparent, rgba(191, 248, 238, 0.9), rgba(246, 185, 195, 0.42), transparent, rgba(255, 248, 217, 0.72), transparent);
+  background: conic-gradient(from 130deg, transparent, rgba(191, 248, 238, 0.9), rgba(246, 185, 195, 0.36), transparent, rgba(216, 240, 248, 0.72), transparent);
   animation: spin 18s linear infinite;
 }
 
@@ -457,7 +458,7 @@ h1 {
   aspect-ratio: 1;
   place-items: center;
   transform-style: preserve-3d;
-  filter: hue-rotate(calc(var(--scroll-progress, 0) * 28deg));
+  filter: saturate(1.02);
 }
 
 .holo-ring {
@@ -598,6 +599,10 @@ h1 {
   backdrop-filter: blur(12px);
 }
 
+.metrics-panel article + article {
+  border-top: 1px solid rgba(38, 48, 40, 0.09);
+}
+
 .metrics-panel article {
   display: grid;
   gap: 4px;
@@ -638,7 +643,7 @@ h2 {
   font-family: ui-sans-serif, "Avenir Next", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
   font-size: clamp(42px, 6vw, 88px);
   font-weight: 740;
-  letter-spacing: -0.04em;
+  letter-spacing: 0;
   line-height: 0.98;
 }
 
@@ -785,7 +790,7 @@ button:focus-visible {
 
 @keyframes iridescent {
   to {
-    filter: hue-rotate(35deg) saturate(1.12);
+    filter: saturate(1.08) brightness(1.03);
   }
 }
 

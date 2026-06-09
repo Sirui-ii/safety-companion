@@ -18,9 +18,11 @@ const metrics = globalThis.__luluMetrics || {
   contactSaves: 0,
   checkIns: 0,
   pageViews: 0,
+  activeSessions: new Map(),
   updatedAt: null
 };
 globalThis.__luluMetrics = metrics;
+if (!metrics.activeSessions) metrics.activeSessions = new Map();
 const mimeTypes = new Map([
   [".html", "text/html; charset=utf-8"],
   [".css", "text/css; charset=utf-8"],
@@ -75,6 +77,17 @@ export async function handleRequest(req, res) {
 
     if (req.method === "POST" && url.pathname === "/api/metrics/contact") {
       metrics.contactSaves += 1;
+      metrics.updatedAt = new Date().toISOString();
+      return sendJson(res, 200, publicMetrics());
+    }
+
+    if (req.method === "POST" && url.pathname === "/api/metrics/active") {
+      const body = await readJson(req);
+      const sessionId = cleanSessionId(body.sessionId || "");
+      if (sessionId) {
+        metrics.activeSessions.set(sessionId, Date.now());
+        pruneActiveSessions();
+      }
       metrics.updatedAt = new Date().toISOString();
       return sendJson(res, 200, publicMetrics());
     }
@@ -201,6 +214,7 @@ function pickPlan(body) {
 }
 
 function publicMetrics() {
+  pruneActiveSessions();
   return {
     luluStarts: metrics.luluStarts,
     callClicks: metrics.callClicks,
@@ -208,8 +222,20 @@ function publicMetrics() {
     contactSaves: metrics.contactSaves,
     checkIns: metrics.checkIns,
     pageViews: metrics.pageViews,
+    activeNow: metrics.activeSessions.size,
     updatedAt: metrics.updatedAt
   };
+}
+
+function pruneActiveSessions() {
+  const cutoff = Date.now() - 90_000;
+  for (const [sessionId, lastSeen] of metrics.activeSessions.entries()) {
+    if (lastSeen < cutoff) metrics.activeSessions.delete(sessionId);
+  }
+}
+
+function cleanSessionId(value) {
+  return String(value).replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 80);
 }
 
 async function createLuluVcard() {
