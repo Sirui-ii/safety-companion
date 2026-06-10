@@ -21,11 +21,13 @@ const metrics = globalThis.__luluMetrics || {
   checkIns: 0,
   pageViews: 0,
   leads: 0,
+  visitorSessions: new Map(),
   activeSessions: new Map(),
   updatedAt: null
 };
 globalThis.__luluMetrics = metrics;
 if (!metrics.activeSessions) metrics.activeSessions = new Map();
+if (!metrics.visitorSessions) metrics.visitorSessions = new Map();
 if (typeof metrics.leads !== "number") metrics.leads = 0;
 const mimeTypes = new Map([
   [".html", "text/html; charset=utf-8"],
@@ -60,7 +62,17 @@ export async function handleRequest(req, res) {
     }
 
     if (req.method === "GET" && url.pathname === "/api/metrics") {
-      metrics.pageViews += 1;
+      metrics.updatedAt = new Date().toISOString();
+      return sendJson(res, 200, publicMetrics());
+    }
+
+    if (req.method === "POST" && url.pathname === "/api/metrics/page-view") {
+      const body = await readJson(req);
+      const sessionId = cleanSessionId(body.sessionId || "");
+      if (sessionId && !metrics.visitorSessions.has(sessionId)) {
+        metrics.visitorSessions.set(sessionId, Date.now());
+        metrics.pageViews += 1;
+      }
       metrics.updatedAt = new Date().toISOString();
       return sendJson(res, 200, publicMetrics());
     }
@@ -125,11 +137,11 @@ export async function handleRequest(req, res) {
       });
     }
 
-    if (req.method === "GET" && (url.pathname === "/luulu.vcf" || url.pathname === "/lulu.vcf")) {
-      const vcard = await createLuuluVcard();
+    if ((req.method === "GET" || req.method === "HEAD") && (url.pathname === "/luulu.vcf" || url.pathname === "/lulu.vcf")) {
+      const vcard = req.method === "GET" ? await createLuuluVcard() : "";
       res.writeHead(200, {
-        "Content-Type": "text/vcard; charset=utf-8",
-        "Content-Disposition": 'attachment; filename="Luulu.vcf"',
+        "Content-Type": "text/x-vcard; charset=utf-8",
+        "Content-Disposition": 'inline; filename="Luulu.vcf"',
         "Cache-Control": "public, max-age=3600"
       });
       res.end(vcard);
@@ -242,6 +254,7 @@ function publicMetrics() {
     contactSaves: metrics.contactSaves,
     checkIns: metrics.checkIns,
     pageViews: metrics.pageViews,
+    pageVisitors: metrics.pageViews,
     leads: metrics.leads,
     activeNow: metrics.activeSessions.size,
     updatedAt: metrics.updatedAt
@@ -392,7 +405,7 @@ async function createLuuluVcard() {
     "ORG:Friend & Companion",
     "TITLE:AI Emotional Companion",
     `TEL;TYPE=CELL,VOICE:${process.env.LIVEKIT_PHONE_NUMBER || defaultPhoneNumber}`,
-    "URL:https://safety-companion-siruis-projects-98fae10c.vercel.app",
+    "URL:https://withluulu.com",
     "NOTE:Luulu is an AI friend and emotional companion. Luulu does not record calls or save what you say."
   ];
   if (photo) {

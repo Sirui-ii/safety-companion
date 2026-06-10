@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/luulu.vcf",
+      "destination": "/api/[...path].mjs"
+    },
+    {
       "source": "/lulu.vcf",
       "destination": "/api/[...path].mjs"
     },

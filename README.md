@@ -18,7 +18,7 @@ The website is deployed on Vercel. The phone agent currently requires a LiveKit 
 - Simple friend-and-companion landing page with a direct phone CTA.
 - Anonymous usage number for Luulu call starts.
 - Save-to-contacts button with Luulu's contact photo and phone number.
-- Privacy-preserving success metrics for call taps, LiveKit call starts, contact saves, and self-help check-ins.
+- Privacy-preserving success metrics for visitors, people online now, call taps, LiveKit call sessions, contact saves, and self-help check-ins.
 - Optional update/event subscription form with explicit mailing-list and phone-update opt-in.
 - Optional Notion lead database sync for hackathon usage tracking.
 - Crisis-aware safety routing for emergency services and 988.
@@ -154,7 +154,8 @@ Recommended metrics:
 - `callClicks`: people tapping the phone CTA on the website.
 - `contactSaves`: people saving Luulu to their contacts.
 - `uniqueParticipants`: public LiveKit-style reach number, seeded from dashboard stats and incremented from LiveKit webhook activity.
-- `sessionRooms`: public session/room number, seeded from dashboard stats and incremented from LiveKit webhook activity.
+- `pageVisitors`: unique browser sessions that opened the landing page.
+- `sessionRooms`: public call/session number, seeded from dashboard stats and incremented from LiveKit webhook activity.
 - `activeNow`: anonymous browser sessions active in the last 90 seconds.
 - `leads`: people who subscribed for Luulu updates and events.
 - `luluStarts`: anonymous total starts shown on the landing page.

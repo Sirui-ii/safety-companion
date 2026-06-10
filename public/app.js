@@ -1,5 +1,6 @@
 const metricEls = {
-  luluStarts: document.querySelector("#luluStarts"),
+  pageVisitors: document.querySelector("#pageVisitors"),
+  callClicks: document.querySelector("#callClicks"),
   sessionRooms: document.querySelector("#sessionRooms"),
   activeNow: document.querySelector("#activeNow")
 };
@@ -15,6 +16,7 @@ initLanding();
 initAmbientMotion();
 
 async function initLanding() {
+  await postPageViewMetric();
   renderMetrics(await getMetrics());
   await postActiveMetric();
   window.setInterval(postActiveMetric, 30_000);
@@ -35,6 +37,21 @@ async function initLanding() {
   leadForm?.addEventListener("submit", handleLeadSubmit);
 }
 
+async function postPageViewMetric() {
+  try {
+    const response = await fetch("/api/metrics/page-view", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      keepalive: true,
+      body: JSON.stringify({ sessionId: getSessionId() })
+    });
+    if (!response.ok) throw new Error("Metrics unavailable");
+    renderMetrics(await response.json());
+  } catch {
+    renderMetrics(getCurrentMetrics());
+  }
+}
+
 async function refreshMetrics() {
   renderMetrics(await getMetrics());
 }
@@ -45,7 +62,7 @@ async function getMetrics() {
     if (!response.ok) throw new Error("Metrics unavailable");
     return response.json();
   } catch {
-    return { luluStarts: 0, livekitCalls: 0, callClicks: 0, contactSaves: 0, activeNow: 0 };
+    return { pageVisitors: 0, callClicks: 0, sessionRooms: 0, activeNow: 0 };
   }
 }
 
@@ -124,7 +141,8 @@ async function postActiveMetric() {
 }
 
 function renderMetrics(metrics) {
-  setMetric(metricEls.luluStarts, metrics.uniqueParticipants || metrics.livekitCalls || metrics.luluStarts || metrics.callClicks);
+  setMetric(metricEls.pageVisitors, metrics.pageVisitors || metrics.pageViews);
+  setMetric(metricEls.callClicks, metrics.callClicks);
   setMetric(metricEls.sessionRooms, metrics.sessionRooms || metrics.livekitCalls);
   setMetric(metricEls.activeNow, metrics.activeNow);
 }
@@ -136,7 +154,8 @@ function setMetric(element, value) {
 
 function getCurrentMetrics() {
   return {
-    luluStarts: metricNumber(metricEls.luluStarts),
+    pageVisitors: metricNumber(metricEls.pageVisitors),
+    callClicks: metricNumber(metricEls.callClicks),
     sessionRooms: metricNumber(metricEls.sessionRooms),
     activeNow: metricNumber(metricEls.activeNow)
   };
